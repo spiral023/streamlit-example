@@ -15,11 +15,7 @@ forums](https://discuss.streamlit.io).
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
 
-
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
-
+def generate_spiral_points(total_points, num_turns):
     Point = namedtuple('Point', 'x y')
     data = []
 
@@ -33,6 +29,18 @@ with st.echo(code_location='below'):
         y = radius * math.sin(angle)
         data.append(Point(x, y))
 
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+    return data
+
+def main():
+    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
+    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
+
+    data = generate_spiral_points(total_points, num_turns)
+
+    df = pd.DataFrame(data)
+    chart = alt.Chart(df, height=500, width=500).mark_circle(color='#0068c9', opacity=0.5).encode(x='x:Q', y='y:Q')
+
+    st.altair_chart(chart)
+
+if __name__ == "__main__":
+    main()
